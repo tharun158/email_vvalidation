@@ -1,0 +1,43 @@
+<!-- dashboard.ejs -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <a href="/dashboard">Profile</a>
+            <a href="/search">Search</a>
+            <a href="/signout">Sign Out</a>
+        </div>
+        <div class="content">
+            <% if (page === 'profile') { %>
+                <h1>Welcome, <%= user.name %></h1>
+                <h2>Recent Searches</h2>
+                <% if (user.searches && user.searches.length > 0) { %>
+                    <% user.searches.slice().reverse().forEach(search => { %>
+                        <div class="search-result">
+                            <p>Email: <%= search.email %></p>
+                            <p>Status: <%= search.status %></p>
+                            <p>Domain: <%= search.domain %></p>
+                            <p>Disposable: <%= search.disposable %></p>
+                            <p>Free: <%= search.free %></p>
+                            <p>Time: <%= new Date(search.timestamp).toLocaleString() %></p>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p>No searches yet</p>
+                <% } %>
+            <% } else if (page === 'search') { %>
+                <h2>Search Email</h2>
+                <form action="/search" method="POST">
+                    <input type="email" name="emailToSearch" placeholder="Enter email to verify" required>
+                    <button type="submit">Search</button>
+                </form>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>
