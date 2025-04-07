@@ -7,7 +7,6 @@ const bcrypt = require('bcrypt');
 
 const app = express();
 
-// Firebase initialization
 const serviceAccount = require('./key.json');
 firebase.initializeApp({
     credential: firebase.credential.cert(serviceAccount)
@@ -15,20 +14,19 @@ firebase.initializeApp({
 
 const db = firebase.firestore();
 
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(session({
-    secret: 'your-secret-key-here', // Change this to a secure random string
+    secret: 'your-secret-key-here', 
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // Set to true if using HTTPS
+    cookie: { secure: false } 
 }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Routes
+
 app.get('/', (req, res) => {
     res.render('signin');
 });
@@ -97,19 +95,17 @@ app.post('/search', async (req, res) => {
     const { emailToSearch } = req.body;
     
     try {
-        // APILayer Email Verification API
         const response = await axios.get(`https://api.apilayer.com/email_verification/${encodeURIComponent(emailToSearch)}`, {
             headers: {
-                'apikey': 'ffqe3v8VHNz4DIG5FVvPFg4AmgEVjXAU' // Correct header for APILayer
+                'apikey': 'ffqe3v8VHNz4DIG5FVvPFg4AmgEVjXAU'
             }
         });
         
-        console.log('API Response:', response.data); // Log the API response for debugging
+        console.log('API Response:', response.data); 
 
-        // Map APILayer response fields to your desired structure
         const searchResult = {
             email: emailToSearch,
-            status: response.data.mx_records ? 'valid' : 'invalid', // Example status based on MX records
+            status: response.data.mx_records ? 'valid' : 'invalid', 
             domain: response.data.domain || 'unknown',
             disposable: response.data.is_disposable || false,
             free: response.data.is_free_email || false,
